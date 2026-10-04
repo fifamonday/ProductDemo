@@ -1,4 +1,9 @@
 import { z } from "zod";
+// หน้าที่หลักมี 4 อย่าง
+// 1. กำหนดหมวดหมู่
+// 2. กำหนด Schema
+// 3. สร้าง Type
+// 4. เรียก API
 
 // รายชื่อหมวดหมู่ คัดลอกจาก
 // https://dummyjson.com/products/category-list
@@ -29,7 +34,8 @@ export const CATEGORIES = [
   "womens-watches",
 ] as const;
 
-export const ProductSchema = z.object({
+export const ProductSchema = z.object({ // “ใช้ Zod ตรวจสอบว่าข้อมูลสินค้าที่ได้รับมีรูปแบบถูกต้องหรือไม่” // ตรวจสอบ สินค้า 1 ชิ้น
+  // ใช้ Zod ตรวจสอบว่าข้อมูลที่กรอกถูกต้องหรือไม่
   id: z.number(),
 
   title: z
@@ -56,14 +62,14 @@ export const ProductSchema = z.object({
   thumbnail: z.string().optional(),
 });
 
-export const ProductListSchema = z.object({
+export const ProductListSchema = z.object({ //ตรวจสอบ ข้อมูลสินค้าทั้งชุดจาก API
   products: z.array(ProductSchema),
   total: z.number(),
   skip: z.number(),
   limit: z.number(),
 });
 
-// Type ที่สร้างจาก Schema
+// Type ที่สร้างจาก Schema //หมายถึงเอา Schema มาสร้าง Type สำหรับ TypeScript
 export type Product = z.infer<typeof ProductSchema>;
 export type ProductList = z.infer<typeof ProductListSchema>;
 
@@ -77,11 +83,14 @@ export const ProductDraftSchema = ProductSchema.omit({
 
 export type ProductDraft = z.infer<typeof ProductDraftSchema>;
 
+// // URL หลักของ API ที่ใช้ดึงข้อมูลสินค้า
 const API_BASE = "https://dummyjson.com";
-
+// กำหนดช่องที่สามารถใช้เรียงสินค้าได้
 export const SORT_FIELDS = ["title", "price", "stock"] as const;
 
+// ตรวจสอบข้อมูลที่ใช้ค้นหาสินค้า
 export const SearchQuerySchema = z.object({
+  // คำค้นหา
   q: z.string().trim(),
 
   limit: z
@@ -95,6 +104,7 @@ export const SearchQuerySchema = z.object({
 
 export type SearchQuery = z.infer<typeof SearchQuerySchema>;
 
+// // กำหนดค่าเริ่มต้นตอนเปิดหน้าเว็บ
 export const defaultQuery: SearchQuery = {
   q: "",
   limit: 10,
@@ -119,10 +129,11 @@ export function buildProductUrl(query: SearchQuery): string {
   return url;
 }
 
+// เรียก API
 export async function fetchProducts(
   query: SearchQuery
 ): Promise<ProductList> {
-  const response = await fetch(buildProductUrl(query));
+  const response = await fetch(buildProductUrl(query)); // fetch(buildProductUrl(query)) ไปเรียก API
 
   if (!response.ok) {
     throw new Error(`เรียกข้อมูลไม่สำเร็จ สถานะ ${response.status}`);

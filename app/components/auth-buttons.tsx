@@ -62,3 +62,6 @@ export function AuthButtons({
     </form>
   );
 }
+//“AuthButtons ใช้จัดการการ Login และ Logout ครับ ถ้ายังไม่ได้ Login จะแสดงปุ่ม Login with Google โดยใช้ signIn ส่วนถ้า Login
+// แล้วจะแสดงชื่อผู้ใช้และปุ่มออกจากระบบโดยใช้ signOut
+// ซึ่งทำงานผ่าน Server Action ครับ”

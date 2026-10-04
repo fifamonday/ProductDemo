@@ -1,11 +1,13 @@
+// ไฟล์นี้สำคัญสำหรับ แก้ไข + ลบ
+
 "use server";
 
 import { auth } from "@/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-async function requireUser() {
-  const session = await auth();
+async function requireUser() { // ก่อนแก้ไขหรือลบ ต้องตรวจว่า Login แล้ว
+  const session = await auth(); // ตรวจว่าผู้ใช้ Login อยู่หรือไม่
 
   if (!session?.user) {
     throw new Error("Unauthorized");
@@ -14,11 +16,11 @@ async function requireUser() {
   return session.user;
 }
 
-export async function updateProductAction(
+export async function updateProductAction( // แก้ไขสินค้า
   id: string,
   formData: FormData
 ) {
-  await requireUser();
+  await requireUser(); // แล้วเอาข้อมูลจาก Form
 
   const title = String(
     formData.get("title") ?? ""
@@ -34,7 +36,7 @@ export async function updateProductAction(
 
   const category = String(
     formData.get("category") ?? ""
-  ).trim();
+  ).trim(); 
 
   if (!title) {
     throw new Error("กรุณากรอกชื่อสินค้า");
@@ -59,7 +61,7 @@ export async function updateProductAction(
   const response = await fetch(
     `https://dummyjson.com/products/${id}`,
     {
-      method: "PUT",
+      method: "PUT", // แล้วส่งไป DummyJSON ด้วย
       headers: {
         "Content-Type": "application/json",
       },
@@ -83,7 +85,7 @@ export async function updateProductAction(
   redirect("/");
 }
 
-export async function deleteProductAction(
+export async function deleteProductAction(  // ลบสินค้า
   id: string
 ) {
   await requireUser();
@@ -91,7 +93,7 @@ export async function deleteProductAction(
   const response = await fetch(
     `https://dummyjson.com/products/${id}`,
     {
-      method: "DELETE",
+      method: "DELETE", // แล้วส่งไป DummyJSON ด้วย
     }
   );
 
@@ -105,3 +107,11 @@ export async function deleteProductAction(
 
   redirect("/");
 }
+
+// หลังแก้ไข/ลบมี revalidatePath("/"); แล้ว
+
+// redirect("/");
+
+// จำประโยคนี้:
+
+// “หลังจากแก้ไขหรือลบข้อมูล จะ Revalidate หน้าแรกแล้ว Redirect กลับไปหน้าแรก”

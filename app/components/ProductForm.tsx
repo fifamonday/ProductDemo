@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form"; //  React Hook Form→ จัดการค่าจากฟอร์มตอนกดเพิ่ม/บันทึก
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CATEGORIES,
@@ -21,7 +21,7 @@ export default function ProductForm({
   editing,
   onSave,
   onCancel,
-}: ProductFormProps) {
+}: ProductFormProps) { // สร้าง ฟอร์มเพิ่ม/แก้ไขสินค้า และรับค่าจาก ProductFormProps
   const {
     register,
     handleSubmit,
@@ -32,17 +32,17 @@ export default function ProductForm({
       isValid,
     },
   } = useForm<ProductDraft>({
-    resolver: zodResolver(ProductDraftSchema),
+    resolver: zodResolver(ProductDraftSchema), // เพื่อตรวจสอบข้อมูล
     mode: "onTouched",
 
-    defaultValues: editing
+    defaultValues: editing // ถ้าอยู่ในโหมด แก้ไข ให้เอาข้อมูลสินค้าเดิมมาใส่ในฟอร์ม
       ? {
           title: editing.title,
           price: editing.price,
           stock: editing.stock,
           category: editing.category,
         }
-      : {
+      : { // ถ้าเป็น เพิ่มสินค้าใหม่ ให้เริ่มต้นด้วยช่องว่าง
           title: "",
           price: undefined,
           stock: undefined,
@@ -143,7 +143,7 @@ export default function ProductForm({
 
       <button
         type="submit"
-        disabled={!isDirty || !isValid}
+        disabled={!isDirty || !isValid} // ต้องมีการแก้ไขข้อมูล และข้อมูลต้องผ่าน Validation ก่อน ปุ่มจึงกดได้
       >
         {editing
           ? "บันทึกการแก้ไข"

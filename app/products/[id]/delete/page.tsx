@@ -74,3 +74,17 @@ export default async function DeleteProductPage({
     </main>
   );
 }
+
+// กดลบ
+//    ↓
+// delete/page.tsx
+//    ↓
+// แสดง "ต้องการลบไหม?"
+//    ↓
+// กด "ยืนยันการลบ"
+//    ↓
+// actions.ts
+//    ↓
+// deleteProductAction()
+//    ↓
+// ส่ง DELETE ไป API

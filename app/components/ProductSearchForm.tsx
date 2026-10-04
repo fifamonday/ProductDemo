@@ -31,7 +31,7 @@ export default function ProductSearchForm({
 
   return (
     <form
-      onSubmit={handleSubmit(onSearch)}
+      onSubmit={handleSubmit(onSearch)} // เมื่อกดค้นหา จะส่งข้อมูลไปที่ onSearch
       noValidate
     >
       <label htmlFor="q">

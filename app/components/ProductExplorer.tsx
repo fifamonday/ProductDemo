@@ -1,3 +1,4 @@
+// “ProductExplorer เป็น Component หลักที่ควบคุม State การโหลดข้อมูล การค้นหา การแสดงผล และการเพิ่มหรือแก้ไขข้อมูลสินค้า”
 "use client";
 
 import Link from "next/link";
@@ -28,22 +29,22 @@ type ProductExplorerProps = {
 
 export default function ProductExplorer({
   isLoggedIn,
-}: ProductExplorerProps) {
+}: ProductExplorerProps) { // สร้าง Component หลักชื่อ ProductExplorer และรับค่า isLoggedIn เพื่อรู้ว่า ผู้ใช้ Login แล้วหรือยัง
   const [products, setProducts] =
-    useState<Product[]>([]);
+    useState<Product[]>([]); // → สร้างตัวแปร products สำหรับ เก็บรายการสินค้าเริ่มต้นเป็นข้อมูลว่าง []
 
-  const [status, setStatus] =
+  const [status, setStatus] = //เก็บ สถานะการโหลดข้อมูล
     useState<LoadState>("loading");
 
-  const [errorMessage, setErrorMessage] =
+  const [errorMessage, setErrorMessage] = //→ เก็บ ข้อความแจ้งเตือนเมื่อเกิดข้อผิดพลาดเริ่มต้นเป็นข้อความว่าง
     useState("");
 
-  const [editing, setEditing] =
+  const [editing, setEditing] = //เก็บ สินค้าที่กำลังแก้ไข
     useState<Product | null>(null);
 
-  function showResult(list: ProductList) {
-    setProducts(list.products);
-    setStatus("ready");
+  function showResult(list: ProductList) { //สร้างฟังก์ชัน showResult สำหรับ รับผลลัพธ์รายการสินค้าที่โหลดมา
+    setProducts(list.products); //นำรายการสินค้าที่ได้มา เก็บไว้ใน products
+    setStatus("ready"); // เปลี่ยนสถานะเป็น ready เพื่อบอกว่า โหลดข้อมูลสำเร็จแล้ว
   }
 
   function showError(error: unknown) {
@@ -71,9 +72,9 @@ export default function ProductExplorer({
     }
   }
 
-  useEffect(() => {
+  useEffect(() => { // เปิดหน้า → เรียก fetchProducts() → เอาข้อมูลมาแสดง
     fetchProducts(defaultQuery)
-      .then(showResult)
+      .then(showResult)      
       .catch(showError);
   }, []);
 
@@ -95,7 +96,7 @@ export default function ProductExplorer({
 
       setEditing(null);
     } else {
-      setProducts([
+      setProducts([ // ใช้ อัปเดต State products โดยเอาสินค้าเดิมทั้งหมดมารวมกับสินค้าใหม่
         ...products,
         {
           ...draft,
@@ -148,9 +149,9 @@ export default function ProductExplorer({
 
       <div className="form-area">
         <ProductSearchForm
-          onSearch={loadProducts}
+          onSearch={loadProducts} // **
         />
-
+        {/* บันทึก และ แสดงตอนเพิ่มสินค้า */}
         <ProductForm
           key={editing?.id ?? "new"}
           editing={editing}
@@ -188,7 +189,7 @@ export default function ProductExplorer({
         {status === "ready" &&
           products.length > 0 && (
             <div className="product-grid">
-              {products.map((item) => (
+              {products.map((item) => ( // ตรงนี้แหละครับที่ products.map() เอาสินค้าแต่ละตัวมาแสดงเป็น Card
                 <article
                   className="product-card"
                   key={item.id}

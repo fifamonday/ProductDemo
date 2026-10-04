@@ -1,0 +1,240 @@
+ลำดับ	ไฟล์	ต้องรู้เรื่องอะไร
+1	app/page.tsx	จุดเริ่มต้นของหน้าแรก
+2	app/components/ProductExplorer.tsx	ตัวหลักในการแสดง/จัดการสินค้า
+3	app/components/ProductSearchForm.tsx	ค้นหา + เรียงสินค้า
+4	app/components/ProductForm.tsx	เพิ่มสินค้า + Validation
+5	app/lib/products.ts	Schema, Type, API และการโหลดข้อมูล
+6	auth.ts	Google Login และตรวจสอบผู้ใช้
+7	proxy.ts	ป้องกันหน้าแก้ไข/ลบ
+8	app/actions.ts	แก้ไข/ลบสินค้าแบบ Server Action
+
+🔥 Flow ที่ควรจำก่อนนอน
+
+ถ้าอาจารย์ถามว่า
+
+“ระบบนี้ทำงานยังไง?”
+
+ตอบประมาณนี้ได้เลย:
+
+หน้าแรก
+   ↓
+page.tsx
+   ↓
+ตรวจสอบ Login ด้วย auth()
+   ↓
+ProductExplorer
+   ↓
+fetchProducts()
+   ↓
+products.ts
+   ↓
+DummyJSON API
+   ↓
+Zod ตรวจสอบข้อมูล
+   ↓
+แสดงสินค้า
+
+--------------------------------------------
+
+🔎 ถ้ากด "ค้นหา"
+ProductSearchForm
+        ↓
+React Hook Form
+        ↓
+Zod Validation
+        ↓
+loadProducts()
+        ↓
+fetchProducts()
+        ↓
+buildProductUrl()
+        ↓
+DummyJSON
+        ↓
+แสดงผล
+
+------------------------------------------------
+➕ ถ้ากด "เพิ่มสินค้า"
+
+หน้าแรก:
+
+ProductForm
+     ↓
+React Hook Form
+     ↓
+Zod Validation
+     ↓
+saveProduct()
+     ↓
+setProducts()
+     ↓
+แสดงสินค้าเพิ่มในหน้าเว็บ
+
+จุดสำคัญ: การเพิ่มสินค้าจาก ProductForm ในหน้าแรกเป็นการเพิ่มเข้า State ของ ProductExplorer ไม่ได้ส่ง POST ไป DummyJSON ในโค้ดชุดนี้
+
+-----------------------------------------------
+✏️ ถ้ากด "แก้ไข"
+หน้าแรก
+   ↓
+กดแก้ไข
+   ↓
+/products/{id}/edit
+   ↓
+proxy.ts ตรวจ Login
+   ↓
+edit/page.tsx
+   ↓
+auth()
+   ↓
+ดึงข้อมูลสินค้า
+   ↓
+กดบันทึก
+   ↓
+updateProductAction()
+   ↓
+requireUser()
+   ↓
+PUT DummyJSON
+   ↓
+revalidatePath("/")
+   ↓
+redirect("/")
+
+--------------------------------------------------
+🗑️ ถ้ากด "ลบ"
+หน้าแรก
+   ↓
+กดลบ
+   ↓
+/products/{id}/delete
+   ↓
+proxy.ts
+   ↓
+delete/page.tsx
+   ↓
+ยืนยันการลบ
+   ↓
+deleteProductAction()
+   ↓
+requireUser()
+   ↓
+DELETE DummyJSON
+   ↓
+revalidatePath("/")
+   ↓
+redirect("/")
+
+------------------------------------------
+🧠 ถ้ามีเวลาอ่านแค่ 30 นาที
+
+ผมแนะนำเรียงแบบนี้:
+
+ต้องจำให้แม่น 🔴
+
+1. ProductExplorer.tsx
+
+รู้ว่า State แต่ละตัวทำอะไร และโหลดข้อมูลอย่างไร
+
+2. products.ts
+
+รู้ว่า Schema, Type, fetchProducts, buildProductUrl คืออะไร
+
+3. auth.ts
+
+รู้ auth(), signIn(), signOut() และ Google Login
+
+4. actions.ts
+
+รู้ requireUser(), PUT, DELETE, revalidatePath(), redirect()
+
+ต้องรู้ Flow 🟡
+
+5. page.tsx
+
+6. ProductSearchForm.tsx
+
+7. ProductForm.tsx
+
+8. proxy.ts
+
+แค่อ่านให้เข้าใจ 🟢
+
+9. edit/page.tsx
+
+10. delete/page.tsx
+
+🎯 คำถามที่อาจารย์น่าจะถาม
+
+จำคำตอบสั้น ๆ พวกนี้ไว้เลย
+
+Q: ใช้ API อะไร?
+
+ใช้ DummyJSON API สำหรับดึงข้อมูลสินค้า และใช้ PUT กับ DELETE ในการแก้ไขและลบ
+
+Q: ใช้ Zod ทำอะไร?
+
+ใช้ตรวจสอบรูปแบบและความถูกต้องของข้อมูล
+
+Q: React Hook Form ใช้ทำอะไร?
+
+ใช้จัดการ Form และ Validation ของข้อมูลที่ผู้ใช้กรอก
+
+Q: auth() คืออะไร?
+
+ใช้ตรวจสอบและอ่าน Session ของผู้ใช้
+
+Q: proxy.ts ทำอะไร?
+
+ป้องกันเส้นทาง Edit และ Delete ไม่ให้ผู้ที่ไม่ได้ Login เข้าใช้งาน
+
+Q: requireUser() ทำอะไร?
+
+ตรวจสอบซ้ำฝั่ง Server ว่าผู้ใช้ Login แล้ว ก่อนอนุญาตให้แก้ไขหรือลบ
+
+Q: revalidatePath("/") ทำอะไร?
+
+ทำให้ข้อมูลของหน้าแรกถูก Revalidate หลังจากมีการเปลี่ยนแปลง
+
+Q: redirect("/") ทำอะไร?
+
+ส่งผู้ใช้กลับไปหน้าแรกหลังทำรายการเสร็จ
+
+Q: params ทำไมต้อง await?
+
+เพราะใน Next.js 16 params เป็น Promise จึงต้อง await ก่อนนำ id มาใช้
+
+Q: ทำไมหน้า Edit/Delete ต้อง Login?
+
+เพราะเป็นหน้าที่ใช้จัดการข้อมูล จึงกำหนดให้เฉพาะผู้ที่ Login แล้วเข้าถึงได้
+
+⭐ จำประโยคเดียวก่อนนอน
+
+“page.tsx เป็นจุดเริ่มต้น → ProductExplorer ควบคุมหน้า → ProductSearchForm/ProductForm รับข้อมูล → products.ts จัดการ Schema และ API → auth.ts/proxy.ts ดูแล Login และสิทธิ์ → actions.ts จัดการแก้ไขและลบฝั่ง Server”
+
+
+
+// 🎤 ถ้าครูให้พูดรวดเดียว
+
+“เมื่อกดเพิ่มสินค้า หน้า page.tsx เรียก ProductExplorer จากนั้น ProductExplorer แสดง ProductForm ผู้ใช้กรอกข้อมูลผ่าน React Hook Form แล้วตรวจสอบด้วย Zod
+จากนั้นเรียก saveProduct() และใช้ setProducts() เพิ่มข้อมูลเข้า State ทำให้สินค้าใหม่แสดงบนหน้าเว็บครับ”
+
+จำ 3 ไฟล์หลักก่อน:
+page.tsx → ProductExplorer.tsx → ProductForm.tsx
+
+ส่วน Zod อยู่ใน app/lib/products.ts ครับ
+
+1. ProductForm.tsx
+      ↓
+2. React Hook Form
+      ↓
+3. Zod / ProductDraftSchema
+      ↓
+4. ProductExplorer.tsx
+      ↓
+5. saveProduct()
+      ↓
+6. setProducts()
+      ↓
+7. products.map()
+      ↓
+8. แสดงสินค้าใหม่

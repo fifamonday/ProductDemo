@@ -13,13 +13,13 @@ type EditProductPageProps = {
 export default async function EditProductPage({
   params,
 }: EditProductPageProps) {
-  const session = await auth();
+  const session = await auth(); // ตรวจ Login
 
   if (!session?.user) {
     redirect("/");
   }
 
-  const { id } = await params;
+  const { id } = await params; // เอา ID จาก URL แล้วเรียก DummyJSON เพื่อเอาข้อมูลสินค้ามาใส่ใน Form
 
   const response = await fetch(
     `https://dummyjson.com/products/${id}`,
@@ -34,7 +34,7 @@ export default async function EditProductPage({
 
   const product = await response.json();
 
-  const updateAction = updateProductAction.bind(
+  const updateAction = updateProductAction.bind( //เมื่อกดบันทึกจะเรียก updateProductAction
     null,
     id
   );
@@ -135,3 +135,16 @@ export default async function EditProductPage({
     </main>
   );
 }
+// กดแก้ไข
+//    ↓
+// edit/page.tsx
+//    ↓
+// แสดงฟอร์มแก้ไข
+//    ↓
+// กด "บันทึก"
+//    ↓
+// actions.ts
+//    ↓
+// updateProductAction()
+//    ↓
+// ส่ง PUT ไป API
